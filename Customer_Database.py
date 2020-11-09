@@ -12,27 +12,19 @@ db = pyodbc.connect('DRIVER={MySQL ODBC 8.0 Unicode Driver};'
                     'Server=localhost;'
                     'Database=project_database;'
                     )
-
 cursor = db.cursor()
-# Creating the table in the database
-"""
-sql = ("Create Table customers ("fname char(15),"
-       "lname char(15),"
-       "tel_no int(11) NOT NULL,"
-       "email varchar(30)
-       "c_no int PRIMARY KEY NOT NULL AUTO_INCREMENT;"
-       )
-cursor.execute(sql)
-"""
 
 
 # Shows each row in the customer table
 def display():
     try:
+        # Select MySQL Command
         cursor.execute("select * from customers;")
+        print('\n\t\tCustomers Table')
+        print('C_no, Fname, Lname, Tel_No')
         for x in cursor:
             print(x)
-    except (ValueError, pyodbc.ProgrammingError) as e:
+    except (ValueError, pyodbc.ProgrammingError, NameError) as e:
         print(e)
         return None
 
@@ -40,14 +32,14 @@ def display():
 # Values are saved in the database
 def insert_customer():
     try:
-        insert = "INSERT INTO customers (c_no, fname, lname, tel_no, email) VALUES (?, ?, ?, ?, ?)"
+        # Insert MySQL Command
+        insert = "INSERT INTO customers (fname, lname, tel_no) VALUES (?, ?, ?)"
+        # Inserted value and Customer Number row are executed
         values = insert_values()
-        # Executing command and values
         cursor.execute(insert, values)
-        # Store values  in Database
+        # Store values in Database
         db.commit()
-        print('Information stored successfully.')
-        cursor.close()
+        print(cursor.rowcount, "record is stored successfully")
     except (ValueError, pyodbc.ProgrammingError, pyodbc.IntegrityError, pyodbc.Error) as e:
         print(e)
         return None
@@ -56,24 +48,10 @@ def insert_customer():
 # Input values in INSERT
 def insert_values():
     print("\t\tPlease fill in the Details\n")
-    c_no = read_id()
     f_name = read_firstname()
     l_name = read_lastname()
     tel_no = read_tel()
-    email = str(input("\tEmail: "))
-    return c_no, f_name, l_name, tel_no, email
-
-
-# Error Handling - Letters Only
-def read_nonempty_alphabetical_string(prompt):
-    while True:
-        s = input(prompt)
-        s_with_no_spaces = s.replace(' ', '')
-        if len(s_with_no_spaces) > 0 and s_with_no_spaces.isalpha():
-            break
-        else:
-            print("LETTER VALUES Only")
-    return s
+    return f_name, l_name, tel_no
 
 
 # User Input (First Name)
@@ -88,6 +66,24 @@ def read_lastname():
     return ln
 
 
+# User Input (Tel Number)
+def read_tel():
+    tel = numeric("\tTelephone Number: ")
+    return tel
+
+
+# Error Handling - Letters Only
+def read_nonempty_alphabetical_string(prompt):
+    while True:
+        s = input(prompt)
+        s_with_no_spaces = s.replace(' ', '')
+        if len(s_with_no_spaces) > 0 and s_with_no_spaces.isalpha():
+            break
+        else:
+            print("\tLETTER VALUES Only")
+    return s
+
+
 # Error Handling - Numeric Values Only
 def numeric(prompt):
     while True:
@@ -96,49 +92,97 @@ def numeric(prompt):
         if len(t_with_no_spaces) > 0 and t.isnumeric():
             break
         else:
-            print("NUMERIC Values Only")
+            print("\tNUMERIC Values Only")
     return t
 
 
-# User Input (Customer ID)
-def read_id():
-    id_no = numeric("\tCustomer Number: ")
-    return id_no
-
-
-# User Input (Tel Number)
-def read_tel():
-    tel = numeric("\tTelephone Number: ")
-    return tel
-
-
-# Updating the customer's number
-def update_customers_c_no():
+# User Input for updating the first name by specifying the customer number
+def update_fname():
     try:
-        update = "UPDATE customers SET c_no = ? WHERE c_no = ?"
-        value = update_values()
-        # Executing command and values
-        cursor.execute(update, value)
-        # Store values  in Database
+        print("\t\tUpdate Customer Details\n")
+        num_row = numeric("\tChoose Row Number: ")
+        change_fname = read_nonempty_alphabetical_string("\tUpdate First Name: ")
+        # Update MySQL Command
+        update = "UPDATE customers SET fname = ? WHERE c_no = ?"
+        # Updated value and Customer Number row are executed
+        val = (change_fname, num_row)
+        cursor.execute(update, val)
+        # Store values in Database
         db.commit()
-        print('Data updated successfully.')
-        cursor.close()
+        print(cursor.rowcount, "record(s) affected")
     except (ValueError, pyodbc.ProgrammingError, pyodbc.IntegrityError, pyodbc.Error) as e:
         print(e)
         return None
 
 
-# User Input
-def update_values():
-    print("\t\tUpdate\n")
-    c_no = input("")
-    return c_no
+# User Input for updating the last name by specifying the customer number
+def update_lname():
+    try:
+        print("\t\tUpdate Customer Details\n")
+        num_row1 = numeric("\tChoose Row Number: ")
+        change_lname = read_nonempty_alphabetical_string("\tUpdate Last Name: ")
+        # Update MySQL Command
+        update = "UPDATE customers SET lname = ? WHERE c_no = ?"
+        # Updated value and Customer Number row are executed
+        val = (change_lname, num_row1)
+        cursor.execute(update, val)
+        # Store values in Database
+        db.commit()
+        print(cursor.rowcount, "record(s) affected")
+    except (ValueError, pyodbc.ProgrammingError, pyodbc.IntegrityError, pyodbc.Error) as e:
+        print(e)
+        return None
+
+
+# User Input for updating the telephone number by specifying the customer number
+def update_tel_no():
+    try:
+        print("\t\tUpdate Customer Details\n")
+        num_row2 = numeric("\tChoose Row Number: ")
+        change_tel_no = numeric("\tUpdate Telephone Number: ")
+        # Update MySQL Command
+        update = "UPDATE customers SET tel_no = ? WHERE c_no = ?"
+        # Updated value and Customer Number row are executed
+        val = (change_tel_no, num_row2)
+        cursor.execute(update, val)
+        # Store values in Database
+        db.commit()
+        print(cursor.rowcount, "record(s) affected")
+    except (ValueError, pyodbc.ProgrammingError, pyodbc.IntegrityError, pyodbc.Error) as e:
+        print(e)
+        return None
+
+
+def update_menu():
+    print("\n\t\t\tUpdate Menu")
+    m_update = "\n\t1: First name \t2: Last Name \t3: Telephone Number \t4:Back to Main Menu" \
+               "\nEnter a number: "
+    # The menu loop and user input of option
+    while True:
+        try:
+            u_number = int(input(m_update))
+            if u_number == 1:
+                update_fname()
+                break
+            elif u_number == 2:
+                update_lname()
+                break
+            elif u_number == 3:
+                update_tel_no()
+                break
+            elif u_number == 4:
+                break
+            else:
+                print("Invalid Choice. Enter 1-4. Please Try Again.")
+        except ValueError:
+            print("Error")
+    return u_number
 
 
 # Displaying the Menu
 def main_menu():
     print("\t---Customer Record Database---")
-    print("\t\tWelcome to the Main Menu")
+    print("\n\t\tWelcome to the Main Menu")
     menu = "\n\t1: Select" \
            "\n\t2: Insert" \
            "\n\t3: Update" \
@@ -153,16 +197,16 @@ def main_menu():
             elif number == 2:
                 insert_customer()
             elif number == 3:
-                print("3")
+                update_menu()
             elif number == 4:
-                print("\nThank for using the Customer Database")
+                print("\nThank for using the Customer Database!")
                 db.close()
                 print("\nThe SQL connection is closed.")
                 break
             else:
-                print("Error. Please Try Again.")
+                print("Invalid. Enter 1-4 only. Please Try Again.")
         except ValueError:
-            print("Invalid Choice. Enter 1-4")
+            print("Invalid. Try Again")
     return number
 
 
