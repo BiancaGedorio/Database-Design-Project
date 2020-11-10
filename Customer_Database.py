@@ -18,9 +18,10 @@ cursor = db.cursor()
 # Shows each row in the customer table
 def display():
     try:
-        # Select MySQL Command
+        # Execute Select MySQL Command
         cursor.execute("select * from customers;")
-        print('\n\t\tCustomers Table')
+        print('\n\t\tCustomers Table\n')
+        # Table Names
         print('C_no, Fname, Lname, Tel_No')
         for x in cursor:
             print(x)
@@ -39,7 +40,7 @@ def insert_customer():
         cursor.execute(insert, values)
         # Store values in Database
         db.commit()
-        print(cursor.rowcount, "record is stored successfully")
+        print(cursor.rowcount, " customer record is stored successfully.")
     except (ValueError, pyodbc.ProgrammingError, pyodbc.IntegrityError, pyodbc.Error) as e:
         print(e)
         return None
@@ -47,7 +48,7 @@ def insert_customer():
 
 # Input values in INSERT
 def insert_values():
-    print("\t\tPlease fill in the Details\n")
+    print("\t\tFill in the Details\n")
     f_name = read_firstname()
     l_name = read_lastname()
     tel_no = read_tel()
@@ -72,34 +73,10 @@ def read_tel():
     return tel
 
 
-# Error Handling - Letters Only
-def read_nonempty_alphabetical_string(prompt):
-    while True:
-        s = input(prompt)
-        s_with_no_spaces = s.replace(' ', '')
-        if len(s_with_no_spaces) > 0 and s_with_no_spaces.isalpha():
-            break
-        else:
-            print("\tLETTER VALUES Only")
-    return s
-
-
-# Error Handling - Numeric Values Only
-def numeric(prompt):
-    while True:
-        t = input(prompt)
-        t_with_no_spaces = t.replace(' ', '')
-        if len(t_with_no_spaces) > 0 and t.isnumeric():
-            break
-        else:
-            print("\tNUMERIC Values Only")
-    return t
-
-
 # User Input for updating the first name by specifying the customer number
 def update_fname():
     try:
-        print("\t\tUpdate Customer Details\n")
+        print("\t\t\tUpdate Customer Details\n")
         num_row = numeric("\tChoose Row Number: ")
         change_fname = read_nonempty_alphabetical_string("\tUpdate First Name: ")
         # Update MySQL Command
@@ -118,7 +95,7 @@ def update_fname():
 # User Input for updating the last name by specifying the customer number
 def update_lname():
     try:
-        print("\t\tUpdate Customer Details\n")
+        print("\t\t\tUpdate Customer Details\n")
         num_row1 = numeric("\tChoose Row Number: ")
         change_lname = read_nonempty_alphabetical_string("\tUpdate Last Name: ")
         # Update MySQL Command
@@ -137,7 +114,7 @@ def update_lname():
 # User Input for updating the telephone number by specifying the customer number
 def update_tel_no():
     try:
-        print("\t\tUpdate Customer Details\n")
+        print("\t\t\tUpdate Customer Details\n")
         num_row2 = numeric("\tChoose Row Number: ")
         change_tel_no = numeric("\tUpdate Telephone Number: ")
         # Update MySQL Command
@@ -153,10 +130,11 @@ def update_tel_no():
         return None
 
 
+# Update menu for selecting which column to append
 def update_menu():
-    print("\n\t\t\tUpdate Menu")
+    print("\n\t\t\t\t\t\t-----Update Menu-----")
     m_update = "\n\t1: First name \t2: Last Name \t3: Telephone Number \t4:Back to Main Menu" \
-               "\nEnter a number: "
+               "\n--> "
     # The menu loop and user input of option
     while True:
         try:
@@ -173,7 +151,7 @@ def update_menu():
             elif u_number == 4:
                 break
             else:
-                print("Invalid Choice. Enter 1-4. Please Try Again.")
+                print("Invalid. Enter 1-4. Try Again.")
         except ValueError:
             print("Error")
     return u_number
@@ -181,13 +159,14 @@ def update_menu():
 
 # Displaying the Menu
 def main_menu():
-    print("\t---Customer Record Database---")
+    print("\t-----Customer Record Database-----")
     print("\n\t\tWelcome to the Main Menu")
-    menu = "\n\t1: Select" \
+    menu = "**************************************************"\
+           "\n\t1: Select" \
            "\n\t2: Insert" \
            "\n\t3: Update" \
            "\n\t4: Quit" \
-           "\nEnter a number: "
+           "\n--> "
     # The menu loop and user input of option
     while True:
         try:
@@ -199,15 +178,39 @@ def main_menu():
             elif number == 3:
                 update_menu()
             elif number == 4:
-                print("\nThank for using the Customer Database!")
+                print("\nThank you for using the Customer Database!")
                 db.close()
                 print("\nThe SQL connection is closed.")
                 break
             else:
-                print("Invalid. Enter 1-4 only. Please Try Again.")
+                print("Invalid. Enter 1-4 only. Try Again.")
         except ValueError:
-            print("Invalid. Try Again")
+            print("Error")
     return number
+
+
+# Error Handling - Letters Only
+def read_nonempty_alphabetical_string(prompt):
+    while True:
+        s = input(prompt)
+        s_with_no_spaces = s.replace(' ', '')
+        if len(s_with_no_spaces) > 0 and s_with_no_spaces.isalpha():
+            break
+        else:
+            print("\t\t\t\tLETTER Values Only")
+    return s
+
+
+# Error Handling - Numeric Values Only
+def numeric(prompt):
+    while True:
+        t = input(prompt)
+        t_with_no_spaces = t.replace(' ', '')
+        if len(t_with_no_spaces) > 0 and t.isnumeric():
+            break
+        else:
+            print("\t\t\t\tNUMERIC Values Only")
+    return t
 
 
 main_menu()
