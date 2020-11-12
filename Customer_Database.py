@@ -20,9 +20,9 @@ def display():
     try:
         # Execute Select MySQL Command
         cursor.execute("select * from customers;")
-        print('\n\t\tCustomers Table\n')
+        print('\n\t\tCustomer Records\n')
         # Table Names
-        print('C_no, Fname, Lname, Tel_No')
+        print('Column: C_no, Fname, Lname, Tel_No')
         for x in cursor:
             print(x)
     except (ValueError, pyodbc.ProgrammingError, NameError) as e:
@@ -132,8 +132,12 @@ def update_tel_no():
 
 # Update menu for selecting which column to append
 def update_menu():
-    print("\n\t\t\t\t\t\t-----Update Menu-----")
-    m_update = "\n\t1: First name \t2: Last Name \t3: Telephone Number \t4:Back to Main Menu" \
+    print("\n\t ____Update SubMenu____")
+    m_update = "\n\tWhich column do you want to update?" \
+               "\n\t1: First name " \
+               "\n\t2: Last Name " \
+               "\n\t3: Telephone Number " \
+               "\n\t4: Back to Main Menu" \
                "\n--> "
     # The menu loop and user input of option
     while True:
@@ -159,9 +163,9 @@ def update_menu():
 
 # Displaying the Menu
 def main_menu():
-    print("\t-----Customer Record Database-----")
-    print("\n\t\tWelcome to the Main Menu")
-    menu = "**************************************************"\
+    print("\n\n\t----Customer Record Database----\n\n")
+    print("\n\t  Welcome to the Main Menu")
+    menu = "\n**************************************************\n"\
            "\n\t1: Select" \
            "\n\t2: Insert" \
            "\n\t3: Update" \
