@@ -1,7 +1,8 @@
 # Database Design Project 2020
 # Author: Bianca Gedorio
 # Student No: R00164040
-# 01/12/2020
+# ITM2-A
+# 12/11/2020
 
 import pyodbc
 
